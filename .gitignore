@@ -1,0 +1,17 @@
+node_modules/
+client/node_modules/
+server/node_modules/
+client/dist/
+server/dist/
+.env
+.env.*
+!.env.example
+client/.env
+server/.env
+.DS_Store
+.venv/
+coverage/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.vscode/
