@@ -473,6 +473,70 @@ a {
   }
 }
 
+.preview-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 8px;
+}
+
+@media print {
+  /* isolate just the resume paper */
+  body * {
+    visibility: hidden;
+  }
+
+  #resume-print-target,
+  #resume-print-target * {
+    visibility: visible;
+  }
+
+  #resume-print-target {
+    background: #fff;
+    border-radius: 0;
+    left: 0;
+    margin: 0;
+    padding: 24px 32px;
+    position: fixed;
+    top: 0;
+    width: 100%;
+  }
+
+  /* clean up card chrome for print */
+  #resume-print-target .entry-card,
+  #resume-print-target .skill-card {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #e0e0e0;
+    border-radius: 0;
+    padding: 12px 0;
+  }
+
+  #resume-print-target .resume-section__header::after {
+    background: #ccc;
+  }
+
+  #resume-print-target .tag {
+    background: #f0f0f0;
+    color: #333;
+  }
+
+  #resume-print-target .entry-heading span,
+  #resume-print-target .entry-heading a,
+  #resume-print-target .profile-links a {
+    color: #333;
+  }
+
+  #resume-print-target .resume-name {
+    font-size: 2rem;
+  }
+
+  /* prevent awkward page breaks mid-entry */
+  #resume-print-target .entry-card,
+  #resume-print-target .skill-card {
+    break-inside: avoid;
+  }
+}
+
 @media (max-width: 720px) {
   .app-shell {
     padding: 18px 14px 40px;
@@ -500,4 +564,163 @@ a {
     align-items: flex-start;
     flex-direction: column;
   }
+}
+
+/* ── Top bar ── */
+.app-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0 20px;
+}
+
+.topbar-brand {
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: 0.02em;
+}
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.topbar-user {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+/* ── Auth modal ── */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(23, 48, 45, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.modal-card {
+  position: relative;
+  background: var(--paper-solid);
+  border-radius: 16px;
+  padding: 36px 32px 32px;
+  width: min(420px, 92vw);
+  box-shadow: var(--shadow);
+}
+
+.modal-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 0;
+}
+
+.modal-tab {
+  background: none;
+  border: none;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-weight: 500;
+  color: var(--muted);
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.modal-tab--active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.form-input {
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.form-input:focus {
+  border-color: var(--accent);
+}
+
+.form-error {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--danger);
+}
+
+.modal-close {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  color: var(--muted);
+  padding: 4px 8px;
+}
+
+/* ── Resume history ── */
+.history-list {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.history-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.history-item:last-child {
+  border-bottom: none;
+}
+
+.history-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.history-name {
+  font-size: 0.875rem;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.history-date {
+  font-size: 0.75rem;
+  color: var(--muted);
 }

@@ -1,5 +1,5 @@
 import { startTransition, useEffect, useState } from 'react';
-import { checkHealth, parseResume, syncGithub } from '../services/api.js';
+import { checkHealth, getResumeHistory, loadResume, parseResume, saveResume, syncGithub } from '../services/api.js';
 
 const STORAGE_KEY = 'resume-builder-draft-v1';
 
@@ -81,13 +81,15 @@ function getErrorMessage(error) {
   return error.response?.data?.message || error.message || 'Something failed while talking to the API.';
 }
 
-export function useResumeBuilder() {
+export function useResumeBuilder(token) {
   const [error, setError] = useState('');
   const [parseMeta, setParseMeta] = useState(null);
   const [parseState, setParseState] = useState('idle');
   const [resume, setResume] = useState(loadDraft);
   const [syncMeta, setSyncMeta] = useState(null);
   const [syncState, setSyncState] = useState('idle');
+  const [saveState, setSaveState] = useState('idle');
+  const [history, setHistory] = useState([]);
   const [systemStatus, setSystemStatus] = useState({
     state: 'warming',
     message: 'Checking server status...'
@@ -176,6 +178,41 @@ export function useResumeBuilder() {
     }));
   }
 
+  async function saveCurrentResume(name) {
+    if (!token) return;
+    setError('');
+    setSaveState('loading');
+    try {
+      const saved = await saveResume(resume, name, token);
+      setSaveState('success');
+      setHistory((prev) => [saved, ...prev]);
+      setTimeout(() => setSaveState('idle'), 2000);
+    } catch (nextError) {
+      setSaveState('error');
+      setError(getErrorMessage(nextError));
+    }
+  }
+
+  async function fetchHistory() {
+    if (!token) return;
+    try {
+      const result = await getResumeHistory(token);
+      setHistory(result.resumes ?? []);
+    } catch {
+      // silently fail — history is a convenience feature
+    }
+  }
+
+  async function loadFromHistory(id) {
+    if (!token) return;
+    try {
+      const result = await loadResume(id, token);
+      applyResumeUpdate(result.resume);
+    } catch (nextError) {
+      setError(getErrorMessage(nextError));
+    }
+  }
+
   function exportResume() {
     const file = new Blob([JSON.stringify(resume, null, 2)], {
       type: 'application/json'
@@ -192,9 +229,14 @@ export function useResumeBuilder() {
     error,
     dismissError: () => setError(''),
     exportResume,
+    history,
+    fetchHistory,
+    loadFromHistory,
     parseMeta,
     parseState,
     resume,
+    saveState,
+    saveCurrentResume,
     syncMeta,
     syncState,
     systemStatus,

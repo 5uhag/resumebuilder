@@ -1,8 +1,14 @@
 import cors from 'cors';
 import express from 'express';
 import { config } from './config/env.js';
+import { connectDb } from './config/db.js';
 import { errorHandler, notFoundHandler } from './middleware/error.middleware.js';
 import apiV1Router from './routes/api.v1.routes.js';
+
+connectDb().catch((err) => {
+  console.error('Failed to connect to MongoDB:', err.message);
+  process.exit(1);
+});
 
 const app = express();
 

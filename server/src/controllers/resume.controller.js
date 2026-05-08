@@ -1,3 +1,4 @@
+import { Resume } from '../models/Resume.js';
 import { syncGithubProjects } from '../services/github.service.js';
 import { parseResumeBuffer } from '../services/resume-parser.service.js';
 import { HttpError } from '../utils/http-error.js';
@@ -43,6 +44,55 @@ export async function syncGithubController(request, response, next) {
     });
 
     response.status(200).json(result);
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function saveResumeController(request, response, next) {
+  try {
+    const { resumeData, name } = request.body ?? {};
+
+    if (!resumeData) {
+      throw new HttpError(400, 'resumeData is required.');
+    }
+
+    const autoName = name?.trim() || `Resume – ${new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`;
+
+    const saved = await Resume.create({
+      userId: request.userId,
+      name: autoName,
+      resumeData
+    });
+
+    response.status(201).json({ id: saved._id, name: saved.name, createdAt: saved.createdAt });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function getHistoryController(request, response, next) {
+  try {
+    const resumes = await Resume.find({ userId: request.userId })
+      .select('name createdAt updatedAt')
+      .sort({ updatedAt: -1 })
+      .limit(20);
+
+    response.status(200).json({ resumes });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function loadResumeController(request, response, next) {
+  try {
+    const resume = await Resume.findOne({ _id: request.params.id, userId: request.userId });
+
+    if (!resume) {
+      throw new HttpError(404, 'Resume not found.');
+    }
+
+    response.status(200).json({ resume: resume.resumeData, name: resume.name });
   } catch (error) {
     next(error);
   }

@@ -35,7 +35,7 @@ export default function ResumePreview({ resume }) {
 
   return (
     <div className="preview-frame">
-      <div className="preview-paper">
+      <div className="preview-paper" id="resume-print-target">
         <header className="resume-header">
           <div>
             <p className="resume-name">{resume.basics.name || 'Your Name'}</p>

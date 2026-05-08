@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/aishu3303/resumebuilder#readme",
   "devDependencies": {
-    "concurrently": "^9.1.2"
+    "concurrently": "^9.1.2",
+    "is-fullwidth-code-point": "^3.0.0"
   }
 }
