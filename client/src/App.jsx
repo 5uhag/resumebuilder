@@ -42,7 +42,8 @@ export default function App() {
     systemStatus,
     parseResumeFile,
     syncGithubProjects,
-    updateBasicsField
+    updateBasicsField,
+    exportAsPdf
   } = useResumeBuilder(token);
 
   const deferredResume = useDeferredValue(resume);
@@ -99,8 +100,8 @@ export default function App() {
             <button className="primary-button" type="button" onClick={exportResume}>
               Export JSON Resume
             </button>
-            <button className="secondary-button" type="button" onClick={() => window.print()}>
-              Print / Save as PDF
+            <button className="secondary-button" type="button" onClick={exportAsPdf}>
+              Download PDF
             </button>
             <span className={`status-pill status-pill--${systemStatus.state}`}>
               {buildHealthLabel(systemStatus)}
@@ -174,8 +175,8 @@ export default function App() {
           ) : null}
 
           <div className="preview-toolbar">
-            <button className="secondary-button" type="button" onClick={() => window.print()}>
-              Print / Save as PDF
+            <button className="secondary-button" type="button" onClick={exportAsPdf}>
+              Download PDF
             </button>
           </div>
 

@@ -17,6 +17,14 @@ const SECTION_ALIASES = {
   summary: 'summary'
 };
 
+// LinkedIn PDFs inject these labels near the top — they look like names but aren't
+const KNOWN_NON_NAME_WORDS = new Set([
+  'contact', 'top skills', 'languages', 'certifications', 'honors-awards',
+  'honors & awards', 'recommendations', 'page', 'see more', 'see less',
+  'publications', 'volunteering', 'courses', 'interests', 'organizations',
+  'activities', 'causes', 'following', 'connections'
+]);
+
 const SKILL_GROUPS = {
   'Cloud and Data': ['AWS', 'Azure', 'GCP', 'MongoDB', 'PostgreSQL', 'MySQL', 'Redis', 'SQL'],
   'Developer Tools': ['Docker', 'Git', 'GitHub', 'Jenkins', 'Figma', 'Linux', 'CI/CD', 'Kubernetes'],
@@ -87,6 +95,7 @@ function guessName(lines) {
     lines.find(
       (line) =>
         !isLikelyHeading(line.toLowerCase()) &&
+        !KNOWN_NON_NAME_WORDS.has(line.toLowerCase()) &&
         !looksLikeContact(line) &&
         line.length <= 60 &&
         /^[A-Za-z][A-Za-z\s.'-]+$/.test(line)
