@@ -85,6 +85,13 @@ a {
   position: relative;
 }
 
+.hero-layout {
+  align-items: start;
+  display: grid;
+  gap: 22px;
+  grid-template-columns: minmax(0, 1fr) minmax(250px, 330px);
+}
+
 .panel-card--hero::after {
   background: linear-gradient(120deg, rgba(255, 107, 53, 0.18), rgba(14, 143, 126, 0));
   border-radius: 999px;
@@ -130,6 +137,46 @@ a {
 
 .hero-copy .hero-text {
   max-width: 70ch;
+}
+
+.hero-side {
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(23, 48, 45, 0.1);
+  border-radius: 16px;
+  padding: 14px;
+}
+
+.hero-side-list {
+  display: grid;
+  gap: 12px;
+  list-style: none;
+  margin: 6px 0 0;
+  padding: 0;
+}
+
+.hero-side-list li {
+  border-bottom: 1px solid rgba(23, 48, 45, 0.1);
+  display: grid;
+  gap: 3px;
+  padding-bottom: 8px;
+}
+
+.hero-side-list li:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.hero-side-list span {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.hero-side-list strong {
+  color: var(--ink);
+  font-size: 0.92rem;
 }
 
 .hero-text,
@@ -415,7 +462,7 @@ a {
     grid-template-columns: 1fr;
   }
 
-  .signal-grid,
+  .hero-layout,
   .skill-grid {
     grid-template-columns: 1fr;
   }

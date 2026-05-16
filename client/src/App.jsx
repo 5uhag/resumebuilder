@@ -73,18 +73,40 @@ export default function App() {
 
       <section className="hero-grid">
         <div className="hero-copy panel-card panel-card--hero">
-          <p className="eyebrow">PRD to MVP</p>
-          <h1>Resume Builder that parses LinkedIn PDFs, syncs GitHub, and outputs ATS-ready resumes.</h1>
-          <p className="hero-text">
-            Parse your LinkedIn PDF, pull in your latest GitHub projects, edit the basics, then save and download as an ATS-focused PDF.
-          </p>
-          <div className="hero-actions">
-            <button className="primary-button" type="button" onClick={handleSave} disabled={saveState === 'loading'}>
-              {saveState === 'loading' ? 'Saving…' : saveState === 'success' ? 'Saved!' : 'Save to account'}
-            </button>
-            <button className="secondary-button" type="button" onClick={exportAsPdf}>
-              Download PDF
-            </button>
+          <div className="hero-layout">
+            <div>
+              <p className="eyebrow">PRD to MVP</p>
+              <h1>Resume Builder that parses LinkedIn PDFs, syncs GitHub, and outputs ATS-ready resumes.</h1>
+              <p className="hero-text">
+                Parse your LinkedIn PDF, pull in your latest GitHub projects, edit the basics, then save and download as an ATS-focused PDF.
+              </p>
+              <div className="hero-actions">
+                <button className="primary-button" type="button" onClick={handleSave} disabled={saveState === 'loading'}>
+                  {saveState === 'loading' ? 'Saving…' : saveState === 'success' ? 'Saved!' : 'Save to account'}
+                </button>
+                <button className="secondary-button" type="button" onClick={exportAsPdf}>
+                  Download PDF
+                </button>
+              </div>
+            </div>
+
+            <aside className="hero-side">
+              <p className="section-kicker">Quick Snapshot</p>
+              <ul className="hero-side-list">
+                <li>
+                  <span>Parser</span>
+                  <strong>{buildParseSource(parseMeta)}</strong>
+                </li>
+                <li>
+                  <span>GitHub sync</span>
+                  <strong>{syncMeta?.usedToken ? 'Authenticated PAT' : 'Public API mode'}</strong>
+                </li>
+                <li>
+                  <span>Export format</span>
+                  <strong>ATS-focused PDF</strong>
+                </li>
+              </ul>
+            </aside>
           </div>
         </div>
       </section>
