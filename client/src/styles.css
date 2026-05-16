@@ -52,7 +52,7 @@ a {
 .hero-grid {
   display: grid;
   gap: 20px;
-  grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr);
+  grid-template-columns: 1fr;
   margin-bottom: 24px;
 }
 
@@ -97,30 +97,18 @@ a {
   width: 220px;
 }
 
-.panel-card--signal {
-  background:
-    linear-gradient(180deg, rgba(24, 48, 45, 0.94), rgba(27, 66, 61, 0.9)),
-    linear-gradient(140deg, rgba(14, 143, 126, 0.3), rgba(255, 107, 53, 0.16));
-  color: #f7f1ea;
-}
-
 .panel-card--actions {
   background: linear-gradient(180deg, rgba(255, 248, 240, 0.95), rgba(255, 243, 232, 0.88));
 }
 
 .eyebrow,
-.section-kicker,
-.signal-label {
+.section-kicker {
   color: var(--accent-alt);
   font-size: 0.78rem;
   font-weight: 700;
   letter-spacing: 0.14em;
   margin: 0 0 10px;
   text-transform: uppercase;
-}
-
-.signal-label {
-  color: rgba(247, 241, 234, 0.72);
 }
 
 .hero-copy h1,
@@ -142,7 +130,6 @@ a {
 }
 
 .hero-text,
-.signal-copy,
 .panel-card p,
 .summary-copy,
 .entry-card p,
@@ -151,12 +138,6 @@ a {
 .alert-banner p {
   color: var(--muted);
   line-height: 1.6;
-}
-
-.panel-card--signal h2,
-.panel-card--signal p,
-.panel-card--signal dd {
-  color: #f7f1ea;
 }
 
 .hero-actions {
@@ -208,7 +189,6 @@ a {
   transform: none;
 }
 
-.status-pill,
 .meta-chip,
 .tag {
   border-radius: 999px;
@@ -217,41 +197,6 @@ a {
   font-weight: 700;
   line-height: 1;
   padding: 10px 12px;
-}
-
-.status-pill--warming {
-  background: rgba(255, 107, 53, 0.14);
-  color: #9c3f16;
-}
-
-.status-pill--ready {
-  background: rgba(14, 143, 126, 0.14);
-  color: #0b7264;
-}
-
-.status-pill--error {
-  background: rgba(179, 54, 34, 0.12);
-  color: var(--danger);
-}
-
-.signal-grid {
-  display: grid;
-  gap: 16px;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  margin: 24px 0 0;
-}
-
-.signal-grid dt {
-  color: rgba(247, 241, 234, 0.66);
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  margin-bottom: 6px;
-  text-transform: uppercase;
-}
-
-.signal-grid dd {
-  margin: 0;
 }
 
 .form-card h3 {
@@ -586,9 +531,71 @@ a {
   gap: 12px;
 }
 
+.status-light {
+  align-items: center;
+  background: rgba(255, 255, 255, 0.45);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  display: inline-flex;
+  gap: 8px;
+  padding: 6px 10px;
+}
+
+.status-light__dot {
+  border-radius: 999px;
+  height: 9px;
+  width: 9px;
+}
+
+.status-light__dot--green {
+  background: #14a44d;
+  box-shadow: 0 0 0 3px rgba(20, 164, 77, 0.15);
+}
+
+.status-light__dot--red {
+  background: #d93025;
+  box-shadow: 0 0 0 3px rgba(217, 48, 37, 0.15);
+}
+
+.status-light__label {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
 .topbar-user {
   font-size: 0.85rem;
   color: var(--muted);
+}
+
+.auth-shell {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 24px;
+}
+
+.auth-card {
+  backdrop-filter: blur(14px);
+  background: var(--paper);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 24px;
+  box-shadow: var(--shadow);
+  max-width: 560px;
+  padding: 28px;
+  width: 100%;
+}
+
+.auth-card h1 {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(1.8rem, 5vw, 2.5rem);
+  margin: 0;
+}
+
+.auth-copy {
+  color: var(--muted);
+  margin: 10px 0 22px;
 }
 
 /* ── Auth modal ── */
@@ -723,4 +730,54 @@ a {
 .history-date {
   font-size: 0.75rem;
   color: var(--muted);
+}
+
+.template-controls {
+  border-top: 1px solid var(--line);
+  margin-top: 18px;
+  padding-top: 14px;
+}
+
+.preview-paper--ats {
+  background: #ffffff;
+  border: 1px solid #d9d9d9;
+  color: #111;
+  font-family: 'Times New Roman', Times, serif;
+}
+
+.preview-paper--ats .resume-name,
+.preview-paper--ats .resume-section__header h3,
+.preview-paper--ats .entry-card h4,
+.preview-paper--ats .skill-card h4 {
+  color: #111;
+  font-family: Georgia, 'Times New Roman', serif;
+}
+
+.preview-paper--ats .resume-label,
+.preview-paper--ats .summary-copy,
+.preview-paper--ats .entry-card p,
+.preview-paper--ats .empty-copy,
+.preview-paper--ats .resume-contact,
+.preview-paper--ats .entry-heading span,
+.preview-paper--ats .entry-heading a,
+.preview-paper--ats .profile-links a,
+.preview-paper--ats .tag {
+  color: #1a1a1a;
+}
+
+.preview-paper--ats .entry-card,
+.preview-paper--ats .skill-card {
+  background: transparent;
+  border: 1px solid #e3e3e3;
+  border-radius: 8px;
+}
+
+.preview-paper--ats .resume-section__header::after {
+  background: #cfcfcf;
+}
+
+.preview-paper--ats .tag {
+  background: #f5f5f5;
+  border-radius: 4px;
+  font-weight: 600;
 }

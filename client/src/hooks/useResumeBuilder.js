@@ -21,7 +21,11 @@ function createEmptyResume() {
     education: [],
     skills: [],
     projects: [],
-    awards: []
+    awards: [],
+    template: {
+      showProjects: true,
+      showAwards: true
+    }
   };
 }
 
@@ -40,6 +44,10 @@ function normalizeResume(candidate) {
         ...(next.basics?.location ?? {})
       },
       profiles: Array.isArray(next.basics?.profiles) ? next.basics.profiles : []
+    },
+    template: {
+      ...empty.template,
+      ...(next.template ?? {})
     },
     work: Array.isArray(next.work) ? next.work : [],
     education: Array.isArray(next.education) ? next.education : [],
@@ -178,6 +186,16 @@ export function useResumeBuilder(token) {
     }));
   }
 
+  function updateTemplateSection(section, enabled) {
+    applyResumeUpdate((currentResume) => ({
+      ...currentResume,
+      template: {
+        ...(currentResume.template ?? { showProjects: true, showAwards: true }),
+        [section]: Boolean(enabled)
+      }
+    }));
+  }
+
   async function saveCurrentResume(name) {
     if (!token) return;
     setError('');
@@ -213,18 +231,6 @@ export function useResumeBuilder(token) {
     }
   }
 
-  function exportResume() {
-    const file = new Blob([JSON.stringify(resume, null, 2)], {
-      type: 'application/json'
-    });
-    const url = window.URL.createObjectURL(file);
-    const anchor = document.createElement('a');
-    anchor.href = url;
-    anchor.download = 'resume.json';
-    anchor.click();
-    window.URL.revokeObjectURL(url);
-  }
-
   async function exportAsPdf() {
     const element = document.getElementById('resume-print-target');
     if (!element) return;
@@ -247,7 +253,6 @@ export function useResumeBuilder(token) {
   return {
     error,
     dismissError: () => setError(''),
-    exportResume,
     exportAsPdf,
     history,
     fetchHistory,
@@ -262,6 +267,7 @@ export function useResumeBuilder(token) {
     systemStatus,
     parseResumeFile,
     syncGithubProjects,
+    updateTemplateSection,
     updateBasicsField
   };
 }

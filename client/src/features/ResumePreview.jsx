@@ -30,12 +30,12 @@ function EmptyState({ label }) {
   return <p className="empty-copy">No {label} yet.</p>;
 }
 
-export default function ResumePreview({ resume }) {
+export default function ResumePreview({ resume, showProjects = true, showAwards = true }) {
   const profiles = resume.basics.profiles ?? [];
 
   return (
     <div className="preview-frame">
-      <div className="preview-paper" id="resume-print-target">
+      <div className="preview-paper preview-paper--ats" id="resume-print-target">
         <header className="resume-header">
           <div>
             <p className="resume-name">{resume.basics.name || 'Your Name'}</p>
@@ -141,64 +141,68 @@ export default function ResumePreview({ resume }) {
           )}
         </Section>
 
-        <Section title="Projects">
-          {resume.projects.length ? (
-            <div className="entry-list">
-              {resume.projects.map((project, index) => (
-                <article className="entry-card" key={`${project.name}-${project.url}-${index}`}>
-                  <div className="entry-heading">
-                    <div>
-                      <h4>{project.name || 'Project'}</h4>
-                      {project.url ? (
-                        <a href={project.url} rel="noreferrer" target="_blank">
-                          {project.url}
-                        </a>
-                      ) : null}
+        {showProjects ? (
+          <Section title="Projects">
+            {resume.projects.length ? (
+              <div className="entry-list">
+                {resume.projects.map((project, index) => (
+                  <article className="entry-card" key={`${project.name}-${project.url}-${index}`}>
+                    <div className="entry-heading">
+                      <div>
+                        <h4>{project.name || 'Project'}</h4>
+                        {project.url ? (
+                          <a href={project.url} rel="noreferrer" target="_blank">
+                            {project.url}
+                          </a>
+                        ) : null}
+                      </div>
                     </div>
-                  </div>
-                  {project.description ? <p>{project.description}</p> : null}
-                  {project.highlights?.length ? (
-                    <ul>
-                      {project.highlights.map((highlight) => (
-                        <li key={highlight}>{highlight}</li>
+                    {project.description ? <p>{project.description}</p> : null}
+                    {project.highlights?.length ? (
+                      <ul>
+                        {project.highlights.map((highlight) => (
+                          <li key={highlight}>{highlight}</li>
+                        ))}
+                      </ul>
+                    ) : null}
+                    <div className="tag-row">
+                      {(project.keywords ?? []).map((keyword) => (
+                        <span className="tag" key={`${project.name}-${keyword}`}>
+                          {keyword}
+                        </span>
                       ))}
-                    </ul>
-                  ) : null}
-                  <div className="tag-row">
-                    {(project.keywords ?? []).map((keyword) => (
-                      <span className="tag" key={`${project.name}-${keyword}`}>
-                        {keyword}
-                      </span>
-                    ))}
-                  </div>
-                </article>
-              ))}
-            </div>
-          ) : (
-            <EmptyState label="projects" />
-          )}
-        </Section>
-
-        <Section title="Awards">
-          {resume.awards.length ? (
-            <div className="entry-list">
-              {resume.awards.map((award, index) => (
-                <article className="entry-card" key={`${award.title}-${award.date}-${index}`}>
-                  <div className="entry-heading">
-                    <div>
-                      <h4>{award.title || 'Award'}</h4>
-                      <p>{award.awarder || 'Awarder'}</p>
                     </div>
-                    <span>{formatDate(award.date)}</span>
-                  </div>
-                  {award.summary ? <p>{award.summary}</p> : null}
-                </article>
-              ))}
-            </div>
-          ) : (
-            <EmptyState label="awards" />
-          )}
-        </Section>
+                  </article>
+                ))}
+              </div>
+            ) : (
+              <EmptyState label="projects" />
+            )}
+          </Section>
+        ) : null}
+
+        {showAwards ? (
+          <Section title="Awards">
+            {resume.awards.length ? (
+              <div className="entry-list">
+                {resume.awards.map((award, index) => (
+                  <article className="entry-card" key={`${award.title}-${award.date}-${index}`}>
+                    <div className="entry-heading">
+                      <div>
+                        <h4>{award.title || 'Award'}</h4>
+                        <p>{award.awarder || 'Awarder'}</p>
+                      </div>
+                      <span>{formatDate(award.date)}</span>
+                    </div>
+                    {award.summary ? <p>{award.summary}</p> : null}
+                  </article>
+                ))}
+              </div>
+            ) : (
+              <EmptyState label="awards" />
+            )}
+          </Section>
+        ) : null}
       </div>
     </div>
   );

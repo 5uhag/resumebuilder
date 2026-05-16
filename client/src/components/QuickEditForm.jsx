@@ -1,4 +1,4 @@
-export default function QuickEditForm({ basics, onChange }) {
+export default function QuickEditForm({ basics, onChange, sectionVisibility, onToggleSection }) {
   return (
     <section className="panel-card form-card">
       <p className="section-kicker">Step 3</p>
@@ -34,6 +34,28 @@ export default function QuickEditForm({ basics, onChange }) {
           onChange={(event) => onChange('summary', event.target.value)}
         />
       </label>
+
+      <div className="template-controls">
+        <p className="section-kicker" style={{ marginBottom: '4px' }}>Template sections</p>
+
+        <label className="consent-row">
+          <input
+            checked={sectionVisibility?.showProjects !== false}
+            type="checkbox"
+            onChange={(event) => onToggleSection('showProjects', event.target.checked)}
+          />
+          <span>Show Projects section</span>
+        </label>
+
+        <label className="consent-row">
+          <input
+            checked={sectionVisibility?.showAwards !== false}
+            type="checkbox"
+            onChange={(event) => onToggleSection('showAwards', event.target.checked)}
+          />
+          <span>Show Awards section</span>
+        </label>
+      </div>
     </section>
   );
 }
