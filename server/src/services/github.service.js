@@ -108,17 +108,36 @@ async function fetchReadmeText(client, repository) {
 }
 
 export async function syncGithubProjects({ token, username }) {
-  const effectiveToken = token || config.githubToken;
-  const client = createGithubClient(effectiveToken);
+  let effectiveToken = token || config.githubToken;
+  let client = createGithubClient(effectiveToken);
 
   try {
-    const repositoriesResponse = await client.get(`/users/${encodeURIComponent(username)}/repos`, {
-      params: {
-        per_page: 6,
-        sort: 'updated',
-        type: 'owner'
+    let repositoriesResponse;
+    try {
+      repositoriesResponse = await client.get(`/users/${encodeURIComponent(username)}/repos`, {
+        params: {
+          per_page: 6,
+          sort: 'updated',
+          type: 'owner'
+        }
+      });
+    } catch (error) {
+      if (error.response?.status === 401 && !token && config.githubToken) {
+        console.warn('Server GITHUB_TOKEN returned 401. Falling back to unauthenticated request.');
+        const fallbackClient = createGithubClient('');
+        repositoriesResponse = await fallbackClient.get(`/users/${encodeURIComponent(username)}/repos`, {
+          params: {
+            per_page: 6,
+            sort: 'updated',
+            type: 'owner'
+          }
+        });
+        client = fallbackClient;
+        effectiveToken = '';
+      } else {
+        throw error;
       }
-    });
+    }
 
     const repositories = repositoriesResponse.data
       .filter((repository) => !repository.fork)
@@ -170,6 +189,10 @@ export async function syncGithubProjects({ token, username }) {
 
     if (error.response?.status === 403) {
       throw new HttpError(403, 'GitHub API rate limit reached. Provide a personal access token and try again.');
+    }
+
+    if (error.response?.status === 401) {
+      throw new HttpError(401, 'The GitHub personal access token you provided is invalid.');
     }
 
     throw new HttpError(502, 'Unable to fetch GitHub repositories right now.');
