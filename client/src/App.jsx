@@ -1,4 +1,4 @@
-import { useDeferredValue } from 'react';
+import React, { useDeferredValue } from 'react';
 import AuthPage from './components/AuthPage.jsx';
 import FileUpload from './components/FileUpload.jsx';
 import GitHubSyncForm from './components/GitHubSyncForm.jsx';
@@ -33,6 +33,7 @@ export default function App() {
     syncMeta,
     syncState,
     systemStatus,
+    parseDownloadedProfile,
     parseResumeFile,
     syncGithubProjects,
     updateTemplateSection,
@@ -114,7 +115,7 @@ export default function App() {
 
       <section className="workspace-grid">
         <aside className="workspace-sidebar">
-          <FileUpload onSubmit={parseResumeFile} state={parseState} />
+          <FileUpload onLocalDemo={parseDownloadedProfile} onSubmit={parseResumeFile} state={parseState} />
           <GitHubSyncForm onSubmit={syncGithubProjects} state={syncState} syncMeta={syncMeta} />
 
           <QuickEditForm

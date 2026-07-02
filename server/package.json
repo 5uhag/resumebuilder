@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "node --watch server.js",
+    "dev": "node server.js",
     "start": "node server.js",
     "build": "node --check server.js && node --check src/app.js && node --check src/controllers/resume.controller.js && node --check src/services/resume-parser.service.js && node --check src/services/github.service.js && node --check src/services/gemini.service.js"
   },

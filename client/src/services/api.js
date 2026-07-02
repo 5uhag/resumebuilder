@@ -69,3 +69,8 @@ export async function loadResume(id, token) {
   const response = await api.get(`/resume/${id}`, { headers: authHeaders(token) });
   return response.data;
 }
+
+export async function parseDownloadedResume(filename) {
+  const response = await api.post(`/resume/parse-downloaded/${encodeURIComponent(filename)}`);
+  return response.data;
+}

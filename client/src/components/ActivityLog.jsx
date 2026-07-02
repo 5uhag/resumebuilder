@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 export default function ActivityLog({ logs, onClear }) {
   const [isOpen, setIsOpen] = useState(true);

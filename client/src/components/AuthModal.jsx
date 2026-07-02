@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { login, register } from '../services/api.js';
 
 export default function AuthModal({ onSuccess, onClose }) {

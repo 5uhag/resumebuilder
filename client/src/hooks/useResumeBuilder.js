@@ -1,5 +1,14 @@
 import { startTransition, useEffect, useState } from 'react';
-import { checkHealth, getHealthUrl, getResumeHistory, loadResume, parseResume, saveResume, syncGithub } from '../services/api.js';
+import {
+  checkHealth,
+  getHealthUrl,
+  getResumeHistory,
+  loadResume,
+  parseDownloadedResume,
+  parseResume,
+  saveResume,
+  syncGithub
+} from '../services/api.js';
 
 const STORAGE_KEY = 'resume-builder-draft-v1';
 
@@ -87,6 +96,10 @@ function mergeProjects(existingResume, nextProjects) {
 
 function getErrorMessage(error) {
   return error.response?.data?.message || error.message || 'Something failed while talking to the API.';
+}
+
+function isLocalDemoToken(token) {
+  return token === 'local-demo-token';
 }
 
 export function useResumeBuilder(token) {
@@ -181,6 +194,28 @@ export function useResumeBuilder(token) {
     }
   }
 
+  async function parseDownloadedProfile(filename) {
+    setError('');
+    setParseState('loading');
+    addLog('info', `Parsing downloaded LinkedIn PDF: "${filename}"...`);
+
+    try {
+      const result = await parseDownloadedResume(filename);
+      applyResumeUpdate(result.resume);
+      setParseMeta(result.meta ?? null);
+      setParseState('success');
+      addLog('success', `Downloaded profile parsed successfully for ${result.resume?.basics?.name || filename}.`);
+      if (result.meta?.warnings?.length) {
+        result.meta.warnings.forEach((warning) => addLog('warn', warning));
+      }
+    } catch (nextError) {
+      setParseState('error');
+      const msg = getErrorMessage(nextError);
+      setError(msg);
+      addLog('error', `Failed to parse downloaded profile: ${msg}`);
+    }
+  }
+
   async function syncGithubProjects(username, token) {
     setError('');
     setSyncState('loading');
@@ -225,6 +260,13 @@ export function useResumeBuilder(token) {
 
   async function saveCurrentResume(name) {
     if (!token) return;
+    if (isLocalDemoToken(token)) {
+      setSaveState('success');
+      addLog('success', 'Local draft is already saved in this browser. Add Mongo later for account history.');
+      setTimeout(() => setSaveState('idle'), 2000);
+      return;
+    }
+
     setError('');
     setSaveState('loading');
     addLog('info', 'Saving resume draft to account...');
@@ -243,7 +285,7 @@ export function useResumeBuilder(token) {
   }
 
   async function fetchHistory() {
-    if (!token) return;
+    if (!token || isLocalDemoToken(token)) return;
     try {
       const result = await getResumeHistory(token);
       setHistory(result.resumes ?? []);
@@ -253,7 +295,7 @@ export function useResumeBuilder(token) {
   }
 
   async function loadFromHistory(id) {
-    if (!token) return;
+    if (!token || isLocalDemoToken(token)) return;
     addLog('info', 'Loading selected resume from history...');
     try {
       const result = await loadResume(id, token);
@@ -302,6 +344,7 @@ export function useResumeBuilder(token) {
     syncMeta,
     syncState,
     systemStatus,
+    parseDownloadedProfile,
     parseResumeFile,
     syncGithubProjects,
     updateTemplateSection,

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { login, register } from '../services/api.js';
 
 export default function AuthPage({ onSuccess }) {
@@ -23,6 +23,13 @@ export default function AuthPage({ onSuccess }) {
     } finally {
       setLoading(false);
     }
+  }
+
+  function handleLocalDemo() {
+    onSuccess('local-demo-token', {
+      email: 'local-demo@example.com',
+      localOnly: true
+    });
   }
 
   return (
@@ -87,6 +94,10 @@ export default function AuthPage({ onSuccess }) {
 
           <button className="primary-button" type="submit" disabled={loading}>
             {loading ? 'Please wait...' : mode === 'login' ? 'Log in' : 'Create account'}
+          </button>
+
+          <button className="secondary-button" type="button" onClick={handleLocalDemo} disabled={loading}>
+            Continue locally
           </button>
         </form>
       </div>

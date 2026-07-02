@@ -1,7 +1,12 @@
+import fs from 'node:fs/promises';
+import os from 'node:os';
+import path from 'node:path';
 import { Resume } from '../models/Resume.js';
 import { syncGithubProjects } from '../services/github.service.js';
 import { parseResumeBuffer } from '../services/resume-parser.service.js';
 import { HttpError } from '../utils/http-error.js';
+
+const LOCAL_DOWNLOAD_PROFILES = new Set(['Profile.pdf', 'Profile-1.pdf']);
 
 function extractGitHubToken(request) {
   const authorizationHeader = request.get('authorization')?.trim();
@@ -103,4 +108,33 @@ export function healthController(_request, response) {
     message: 'Resume builder API is ready.',
     status: 'ok'
   });
+}
+
+export async function parseDownloadedResumeController(request, response, next) {
+  try {
+    const filename = request.params.filename?.trim();
+
+    if (!LOCAL_DOWNLOAD_PROFILES.has(filename)) {
+      throw new HttpError(404, 'Local demo PDF was not found.');
+    }
+
+    const filePath = path.join(os.homedir(), 'Downloads', filename);
+    const buffer = await fs.readFile(filePath);
+    const result = await parseResumeBuffer(buffer);
+
+    response.status(200).json({
+      ...result,
+      meta: {
+        ...(result.meta ?? {}),
+        localFile: filename
+      }
+    });
+  } catch (error) {
+    if (error.code === 'ENOENT') {
+      next(new HttpError(404, 'Downloaded LinkedIn PDF is missing from Downloads.'));
+      return;
+    }
+
+    next(error);
+  }
 }

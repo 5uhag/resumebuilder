@@ -1,3 +1,5 @@
+import React from 'react';
+
 function formatDate(value) {
   if (!value) {
     return 'Present';

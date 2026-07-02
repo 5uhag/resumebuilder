@@ -4,6 +4,7 @@ import {
   getHistoryController,
   healthController,
   loadResumeController,
+  parseDownloadedResumeController,
   parseResumeController,
   saveResumeController,
   syncGithubController
@@ -19,6 +20,7 @@ router.post('/auth/register', registerController);
 router.post('/auth/login', loginController);
 
 router.post('/resume/parse', uploadSingleResume, parseResumeController);
+router.post('/resume/parse-downloaded/:filename', parseDownloadedResumeController);
 router.get('/github/sync/:username', syncGithubController);
 
 router.post('/resume/save', requireAuth, saveResumeController);

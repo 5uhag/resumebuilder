@@ -1,3 +1,5 @@
+import React from 'react';
+
 export default function QuickEditForm({ basics, onChange, sectionVisibility, onToggleSection }) {
   return (
     <section className="panel-card form-card">

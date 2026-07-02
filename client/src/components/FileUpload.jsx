@@ -1,13 +1,17 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 const MAX_FILE_SIZE_MB = 50;
 
-export default function FileUpload({ onSubmit, state }) {
+export default function FileUpload({ onLocalDemo, onSubmit, state }) {
   const [consent, setConsent] = useState(false);
   const [file, setFile] = useState(null);
   const [localError, setLocalError] = useState('');
 
   const isBusy = state === 'loading';
+  const canUseLocalDemo =
+    onLocalDemo &&
+    typeof window !== 'undefined' &&
+    ['localhost', '127.0.0.1'].includes(window.location.hostname);
 
   function handleFileChange(event) {
     const nextFile = event.target.files?.[0] ?? null;
@@ -52,6 +56,20 @@ export default function FileUpload({ onSubmit, state }) {
       <p className="section-kicker">Step 1</p>
       <h3>Parse a profile PDF</h3>
       <p>Upload a LinkedIn PDF and map it into JSON Resume structure.</p>
+
+      {canUseLocalDemo ? (
+        <div className="hint-box" style={{ marginTop: '14px' }}>
+          <strong>Downloaded profiles</strong>
+          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+            <button className="secondary-button" disabled={isBusy} type="button" onClick={() => onLocalDemo('Profile.pdf')}>
+              Load Suhag
+            </button>
+            <button className="secondary-button" disabled={isBusy} type="button" onClick={() => onLocalDemo('Profile-1.pdf')}>
+              Load Bharath
+            </button>
+          </div>
+        </div>
+      ) : null}
 
       <label className="field-block" htmlFor="resume-upload">
         <span>PDF file</span>
