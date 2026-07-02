@@ -1,0 +1,15 @@
+{
+  "buildCommand": "npm run build",
+  "installCommand": "npm install",
+  "outputDirectory": "dist",
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://resumebuilder-api-ordq.onrender.com/api/:path*"
+    },
+    {
+      "source": "/health",
+      "destination": "https://resumebuilder-api-ordq.onrender.com/health"
+    }
+  ]
+}
