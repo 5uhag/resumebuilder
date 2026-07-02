@@ -27,7 +27,9 @@ const allowedOrigins = config.clientOrigin
 app.use(
   cors({
     origin(origin, callback) {
-      if (!origin || allowedOrigins.includes('*') || allowedOrigins.includes(origin)) {
+      const isVercelPreview = origin ? /^https:\/\/[a-z0-9-]+\.vercel\.app$/i.test(origin) : false;
+
+      if (!origin || allowedOrigins.includes('*') || allowedOrigins.includes(origin) || isVercelPreview) {
         callback(null, true);
         return;
       }

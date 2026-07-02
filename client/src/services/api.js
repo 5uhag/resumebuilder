@@ -1,6 +1,13 @@
 import axios from 'axios';
 
 let rawApiBaseUrl = import.meta.env.VITE_API_BASE_URL || '/api/v1';
+if (
+  typeof window !== 'undefined' &&
+  window.location.hostname.endsWith('.vercel.app') &&
+  /onrender\.com/i.test(rawApiBaseUrl)
+) {
+  rawApiBaseUrl = '/api/v1';
+}
 if (/^https?:\/\//.test(rawApiBaseUrl) && !rawApiBaseUrl.endsWith('/api/v1') && !rawApiBaseUrl.endsWith('/api/v1/')) {
   rawApiBaseUrl = rawApiBaseUrl.replace(/\/$/, '') + '/api/v1';
 }
