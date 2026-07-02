@@ -12,6 +12,11 @@ function authHeaders(token) {
   return token ? { Authorization: `Bearer ${token}` } : {};
 }
 
+export function getHealthUrl() {
+  const target = rootBaseUrl ? `${rootBaseUrl}/health` : '/health';
+  return /^https?:\/\//.test(target) ? target : window.location.origin + target;
+}
+
 export async function checkHealth() {
   const target = rootBaseUrl ? `${rootBaseUrl}/health` : '/health';
   const response = await axios.get(target, { timeout: 10000 });

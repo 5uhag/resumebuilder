@@ -1,5 +1,5 @@
 import { startTransition, useEffect, useState } from 'react';
-import { checkHealth, getResumeHistory, loadResume, parseResume, saveResume, syncGithub } from '../services/api.js';
+import { checkHealth, getHealthUrl, getResumeHistory, loadResume, parseResume, saveResume, syncGithub } from '../services/api.js';
 
 const STORAGE_KEY = 'resume-builder-draft-v1';
 
@@ -120,7 +120,8 @@ export function useResumeBuilder(token) {
     let cancelled = false;
 
     async function warmUp() {
-      addLog('info', 'Checking backend server status...');
+      const url = getHealthUrl();
+      addLog('info', `Checking backend server status at: ${url}...`);
       try {
         const result = await checkHealth();
 
@@ -129,15 +130,15 @@ export function useResumeBuilder(token) {
             state: 'ready',
             message: result.message || 'Server is awake and ready.'
           });
-          addLog('success', result.message || 'Server is awake and ready.');
+          addLog('success', `Backend server is ready at: ${url}`);
         }
-      } catch {
+      } catch (err) {
         if (!cancelled) {
           setSystemStatus({
             state: 'error',
             message: 'Server is not reachable. Start the backend before parsing.'
           });
-          addLog('error', 'Server is not reachable. Start the backend before parsing.');
+          addLog('error', `Server is not reachable at ${url}. Details: ${err.message}. Please check that VITE_API_BASE_URL matches your Render backend URL, and CLIENT_ORIGIN on the backend allows this origin.`);
         }
       }
     }
