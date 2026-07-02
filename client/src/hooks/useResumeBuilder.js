@@ -91,6 +91,7 @@ function getErrorMessage(error) {
 
 export function useResumeBuilder(token) {
   const [error, setError] = useState('');
+  const [logs, setLogs] = useState([]);
   const [parseMeta, setParseMeta] = useState(null);
   const [parseState, setParseState] = useState('idle');
   const [resume, setResume] = useState(loadDraft);
@@ -103,6 +104,14 @@ export function useResumeBuilder(token) {
     message: 'Checking server status...'
   });
 
+  function addLog(type, message) {
+    const timestamp = new Date().toLocaleTimeString();
+    setLogs((prev) => [
+      { id: Math.random().toString(36).substring(2, 9), timestamp, type, message },
+      ...prev
+    ]);
+  }
+
   useEffect(() => {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(resume));
   }, [resume]);
@@ -111,6 +120,7 @@ export function useResumeBuilder(token) {
     let cancelled = false;
 
     async function warmUp() {
+      addLog('info', 'Checking backend server status...');
       try {
         const result = await checkHealth();
 
@@ -119,6 +129,7 @@ export function useResumeBuilder(token) {
             state: 'ready',
             message: result.message || 'Server is awake and ready.'
           });
+          addLog('success', result.message || 'Server is awake and ready.');
         }
       } catch {
         if (!cancelled) {
@@ -126,6 +137,7 @@ export function useResumeBuilder(token) {
             state: 'error',
             message: 'Server is not reachable. Start the backend before parsing.'
           });
+          addLog('error', 'Server is not reachable. Start the backend before parsing.');
         }
       }
     }
@@ -149,30 +161,44 @@ export function useResumeBuilder(token) {
   async function parseResumeFile(file) {
     setError('');
     setParseState('loading');
+    addLog('info', `Uploading and parsing resume PDF: "${file.name}"...`);
 
     try {
       const result = await parseResume(file);
       applyResumeUpdate(result.resume);
       setParseMeta(result.meta ?? null);
       setParseState('success');
+      addLog('success', `Resume parsed successfully using ${result.meta?.source === 'gemini' ? 'Gemini' : 'local parser'}.`);
+      if (result.meta?.warnings?.length) {
+        result.meta.warnings.forEach((warning) => addLog('warn', warning));
+      }
     } catch (nextError) {
       setParseState('error');
-      setError(getErrorMessage(nextError));
+      const msg = getErrorMessage(nextError);
+      setError(msg);
+      addLog('error', `Failed to parse resume: ${msg}`);
     }
   }
 
   async function syncGithubProjects(username, token) {
     setError('');
     setSyncState('loading');
+    addLog('info', `Syncing projects from GitHub for user "${username}"...`);
 
     try {
       const result = await syncGithub(username, token);
       applyResumeUpdate((currentResume) => mergeProjects(currentResume, result.projects ?? []));
       setSyncMeta(result.meta ?? null);
       setSyncState('success');
+      addLog('success', `Successfully synced ${result.projects?.length ?? 0} projects from GitHub.`);
+      if (result.meta?.warning) {
+        addLog('warn', result.meta.warning);
+      }
     } catch (nextError) {
       setSyncState('error');
-      setError(getErrorMessage(nextError));
+      const msg = getErrorMessage(nextError);
+      setError(msg);
+      addLog('error', `GitHub sync failed: ${msg}`);
     }
   }
 
@@ -200,14 +226,18 @@ export function useResumeBuilder(token) {
     if (!token) return;
     setError('');
     setSaveState('loading');
+    addLog('info', 'Saving resume draft to account...');
     try {
       const saved = await saveResume(resume, name, token);
       setSaveState('success');
       setHistory((prev) => [saved, ...prev]);
+      addLog('success', `Resume draft "${saved.name || 'Untitled'}" saved successfully.`);
       setTimeout(() => setSaveState('idle'), 2000);
     } catch (nextError) {
       setSaveState('error');
-      setError(getErrorMessage(nextError));
+      const msg = getErrorMessage(nextError);
+      setError(msg);
+      addLog('error', `Failed to save resume: ${msg}`);
     }
   }
 
@@ -223,11 +253,15 @@ export function useResumeBuilder(token) {
 
   async function loadFromHistory(id) {
     if (!token) return;
+    addLog('info', 'Loading selected resume from history...');
     try {
       const result = await loadResume(id, token);
       applyResumeUpdate(result.resume);
+      addLog('success', `Successfully loaded resume "${result.name || 'Untitled'}" from history.`);
     } catch (nextError) {
-      setError(getErrorMessage(nextError));
+      const msg = getErrorMessage(nextError);
+      setError(msg);
+      addLog('error', `Failed to load resume: ${msg}`);
     }
   }
 
@@ -253,6 +287,8 @@ export function useResumeBuilder(token) {
   return {
     error,
     dismissError: () => setError(''),
+    logs,
+    clearLogs: () => setLogs([]),
     exportAsPdf,
     history,
     fetchHistory,

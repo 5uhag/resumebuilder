@@ -4,6 +4,7 @@ import FileUpload from './components/FileUpload.jsx';
 import GitHubSyncForm from './components/GitHubSyncForm.jsx';
 import QuickEditForm from './components/QuickEditForm.jsx';
 import ResumeHistory from './components/ResumeHistory.jsx';
+import ActivityLog from './components/ActivityLog.jsx';
 import ResumePreview from './features/ResumePreview.jsx';
 import { useAuth } from './hooks/useAuth.js';
 import { useResumeBuilder } from './hooks/useResumeBuilder.js';
@@ -19,8 +20,8 @@ export default function App() {
   const { token, user, isLoggedIn, persist, logout } = useAuth();
 
   const {
-    error,
-    dismissError,
+    logs,
+    clearLogs,
     history,
     fetchHistory,
     loadFromHistory,
@@ -142,17 +143,7 @@ export default function App() {
         </aside>
 
         <main className="workspace-main">
-          {error ? (
-            <div className="alert-banner" role="alert">
-              <div>
-                <strong>Action blocked.</strong>
-                <p>{error}</p>
-              </div>
-              <button className="ghost-button" type="button" onClick={dismissError}>
-                Dismiss
-              </button>
-            </div>
-          ) : null}
+          <ActivityLog logs={logs} onClear={clearLogs} />
 
           <div className="preview-toolbar">
             <button className="secondary-button" type="button" onClick={exportAsPdf}>

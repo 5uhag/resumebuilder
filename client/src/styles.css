@@ -831,3 +831,104 @@ a {
   border-radius: 4px;
   font-weight: 600;
 }
+
+/* Log Sheet Styles */
+.log-sheet {
+  margin-top: 10px;
+  margin-bottom: 20px;
+  border: 1px solid rgba(23, 48, 45, 0.15);
+}
+
+.log-sheet__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.log-sheet__count {
+  background: rgba(23, 48, 45, 0.1);
+  color: var(--ink);
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+  margin-left: 6px;
+}
+
+.log-sheet__body {
+  border-top: 1px solid var(--line);
+  padding-top: 12px;
+}
+
+.log-sheet__console {
+  max-height: 200px;
+  overflow-y: auto;
+  font-family: monospace;
+  font-size: 0.85rem;
+  background: rgba(23, 48, 45, 0.03);
+  border: 1px solid rgba(23, 48, 45, 0.08);
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.log-sheet__line {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  line-height: 1.4;
+  padding: 2px 0;
+}
+
+.log-sheet__time {
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+.log-sheet__badge {
+  font-weight: bold;
+  font-size: 0.75rem;
+  padding: 1px 6px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.log-sheet__badge--info {
+  background: rgba(23, 48, 45, 0.08);
+  color: var(--ink);
+}
+
+.log-sheet__badge--success {
+  background: rgba(14, 143, 126, 0.12);
+  color: var(--accent-alt);
+}
+
+.log-sheet__badge--warn {
+  background: rgba(255, 107, 53, 0.12);
+  color: var(--accent);
+}
+
+.log-sheet__badge--error {
+  background: rgba(179, 54, 34, 0.12);
+  color: var(--danger);
+}
+
+.log-sheet__line--error .log-sheet__msg {
+  color: var(--danger);
+}
+
+.log-sheet__line--warn .log-sheet__msg {
+  color: #9c3f16;
+}
+
+.log-sheet__line--success .log-sheet__msg {
+  color: var(--accent-alt);
+}
+
+.log-sheet__msg {
+  color: var(--ink);
+  word-break: break-word;
+}
